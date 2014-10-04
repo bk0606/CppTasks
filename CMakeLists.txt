@@ -5,7 +5,7 @@ project(CppTasks)
 set ( APP_NAME CppTasks )
 
 ### Build types. May be: DEBUG|RELEASE|RELWITHDEBINFO|MINSIZEREL
-set( CMAKE_BUILD_TYPE DEBUG )
+set( CMAKE_BUILD_TYPE RELEASE )
 
 ##############################
 # Sources

@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <omp.h>
 #include "HW1.h"
 
 using namespace std;
