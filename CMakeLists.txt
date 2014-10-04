@@ -4,19 +4,17 @@ cmake_minimum_required(VERSION 2.8.4)
 project(CppTasks)
 set ( APP_NAME CppTasks )
 
-set ( SRC_DIR ${PROJECT_SOURCE_DIR}/src )
-
-### Build types may be: DEBUG|RELEASE|RELWITHDEBINFO|MINSIZEREL
+### Build types. May be: DEBUG|RELEASE|RELWITHDEBINFO|MINSIZEREL
 set( CMAKE_BUILD_TYPE DEBUG )
 
 ##############################
-### Sources
+# Sources
 ##############################
 
-### Path to header folder
-#include_directories ( /path/to/headers_1 )
+### Sources directory
+set ( SRC_DIR ${PROJECT_SOURCE_DIR}/src )
 
-### Files with main
+### Main files
 list(APPEND SRC ${SRC_DIR}/main.cpp )
 #list(APPEND SRC ${SRC_DIR}/graphics/open_gl/Test.c )
 
@@ -56,8 +54,10 @@ add_executable ( ${APP_NAME} ${SRC} )
 
 ### OpenMP
 find_package(OpenMP)
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 ### GLUT
 find_package(GLUT REQUIRED)

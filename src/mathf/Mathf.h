@@ -7,13 +7,13 @@ namespace mathf {
 
     class Mathf {
     public:
-        typedef float (*ptr_integrand)(float );
+        typedef float (*ptr_integrandFunc)(float );
 
-        static float integrateLRects(ptr_integrand func, float from, float to, int stepsCnt);
+        static float integrateLRects(ptr_integrandFunc func, float from, float to, int stepsCnt);
 
-        static float integrateMRects(ptr_integrand func, float from, float to, int stepsCnt);
+        static float integrateMRects(ptr_integrandFunc func, float from, float to, int stepsCnt);
 
-        static float integrateRRects(ptr_integrand func, float from, float to, int stepsCnt);
+        static float integrateRRects(ptr_integrandFunc func, float from, float to, int stepsCnt);
     };
 
 }

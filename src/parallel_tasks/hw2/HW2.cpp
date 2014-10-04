@@ -9,7 +9,7 @@ using namespace utils;
 
 namespace parallel_tasks {
 
-    void HW2::integrate(Mathf::ptr_integrand func, float from, float to, int stepsCnt) {
+    void HW2::integrate(Mathf::ptr_integrandFunc func, float from, float to, int stepsCnt) {
         cout << "\na) Left Rectangles = " << Mathf::integrateLRects(func, from, to, stepsCnt);
         cout << "\nb) Right Rectangles = " << Mathf::integrateRRects(func, from, to, stepsCnt);
         cout << "\nc) Middle Rectangles = " << Mathf::integrateMRects(func, from, to, stepsCnt);

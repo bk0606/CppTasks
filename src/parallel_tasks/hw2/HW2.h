@@ -14,7 +14,7 @@ namespace parallel_tasks {
 
     class HW2 {
     public:
-        void integrate(Mathf::ptr_integrand func, float from, float to, int stepsCnt);
+        void integrate(Mathf::ptr_integrandFunc func, float from, float to, int stepsCnt);
 
         void conditionParallel(int N);
 
