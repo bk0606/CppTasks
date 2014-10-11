@@ -1,4 +1,4 @@
-#include <vector>
+#include  <vector>
 #include <iostream>
 #include <omp.h>
 #include "HW1.h"
@@ -9,15 +9,15 @@ namespace parallel_tasks {
 
     vector<int> HW1::SimpleVectorsProduct(vector<int> &a, vector<int> &b) {
         unsigned long aSize = a.size();
-        int i;
+        int i = 0;
         vector<int> c(aSize, 0);
         if (aSize != b.size()) {
             cout << "Error: vectors must have same size.";
             return c;
         }
 #pragma omp parallel for private(i)
-        for (i=0; i < aSize; ++i) {
-            c[i] = (a[i] * b[i]);
+        for (i = 0; i < aSize; i++) {
+            c[i] = a[i] * b[i]; // omp_get_thread_num();
         }
         return c;
     }
@@ -48,6 +48,7 @@ namespace parallel_tasks {
         }
 //#pragma omp parallel for private(i)
         for (i = 0; i < aRows; ++i) {
+            unsigned long t = A[i].size();
             for (int j = 0; j < aCols; ++j) {
                 C[i][j] = A[i][j] + B[i][j];
             }

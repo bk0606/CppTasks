@@ -1,8 +1,8 @@
 
 /* Copyright (c) Mark J. Kilgard, 1994. */
 
-/* This program is freely distributable without licensing fees 
-   and is provided without guarantee or warrantee expressed or 
+/* This program is freely distributable without licensing fees
+   and is provided without guarantee or warrantee expressed or
    implied. This program is -not- in the public domain. */
 
 /* blender renders two spinning icosahedrons (red and green).
@@ -114,7 +114,7 @@ void visible(int vis)
         glutIdleFunc(NULL);
 }
 
-int main(int argc, char **argv)
+int main_(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

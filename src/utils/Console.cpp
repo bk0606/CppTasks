@@ -8,10 +8,12 @@ using namespace std;
 namespace utils {
 
     void Console::printVector(vector<int> const &vect) {
-        for (int i = 0; i < vect.size(); ++i) {
+        unsigned long size = vect.size();
+        for (int i = 0; i < size; ++i) {
             cout << "[" << i+1 << "]" << ": " << vect[i] << "; ";
             if (i > 100) {
-                cout << " ... " << vect.size() - i << " other items";
+                cout << " ... " << size - i << " other items";
+                // cout << "[" << size -1 << "]" << ": " << vect[size -1] << "; ";
                 break;
             }
         }
