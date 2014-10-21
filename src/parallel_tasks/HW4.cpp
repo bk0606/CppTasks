@@ -78,6 +78,8 @@ namespace parallel_tasks {
                 if (offset < arraySize && process != currentProcRank) {
                     int sentElemsCnt = blockSize;
                     if (offset + blockSize > arraySize) {
+                        // Determine the number of elements in the block were not fully included in the array
+                        // For example: array: {1, 2, 3} block size: 2, offset: 2, then result will be = 1
                         sentElemsCnt = blockSize - (offset + blockSize - arraySize);
                     }
                     MPI_Send(array + offset, sentElemsCnt, MPI_INT, process, 0, MPI_COMM_WORLD);
@@ -88,7 +90,7 @@ namespace parallel_tasks {
         static void task5(int argc, char** argv) {
             int procRank,
                 procCnt,
-                arraySize = 12,
+                arraySize = 20,
                 blockSize;
             MPI_Init(&argc, &argv);
             MPI_Comm_rank(MPI_COMM_WORLD, &procRank);
