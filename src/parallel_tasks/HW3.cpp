@@ -1,3 +1,6 @@
+#ifndef HW3_CPP
+#define HW3_CPP
+
 #include <iostream>
 #include <vector>
 #include <limits.h>
@@ -6,9 +9,10 @@
 using namespace std;
 
 namespace parallel_tasks {
+
     class HW3 {
     public:
-        static void matrixElementsSum(int** mtx, int rows, int cols[]) {
+        static void matrixElementsSum(int **mtx, int rows, int cols[]) {
             // TODO: check - is mtx pass by ref or copied?
             int sum = 0;
 #pragma omp parallel for shared(sum)
@@ -16,16 +20,16 @@ namespace parallel_tasks {
                 if (row % 2 == 0) {
                     for (int col = 0; col < cols[row]; ++col) {
                         if (mtx[row][col] % 2 == 0) {
-                            #pragma omp atomic
-                                sum += mtx[row][col];
+#pragma omp atomic
+                            sum += mtx[row][col];
                         }
                     }
                 }
                 else {
                     for (int col = 0; col < cols[row]; ++col) {
                         if (mtx[row][col] % 2 != 0) {
-                            #pragma omp atomic
-                                sum += mtx[row][col];
+#pragma omp atomic
+                            sum += mtx[row][col];
                         }
                     }
                 }
@@ -84,11 +88,11 @@ namespace parallel_tasks {
             cout << "Lock.\nMin element: " << minEl << ", Max element: " << maxEl << "\n\n";
         }
 
-        static void matrixTransformations_sections(int** mtx, int rows, int cols[]) {
+        static void matrixTransformations_sections(int **mtx, int rows, int cols[]) {
             float arithmeticMean = 0;
             int maxEl = INT_MIN, minEl = INT_MAX,
-                multiple3ElemsCnt = 0,
-                elemsCnt = 0;
+                    multiple3ElemsCnt = 0,
+                    elemsCnt = 0;
             cout << "Task With sections.";
 #pragma omp parallel sections
             {
@@ -131,5 +135,34 @@ namespace parallel_tasks {
             }
         }
 
+
+        static void run() {
+            int mtxRows = 3;
+            int mtxRowsCols[3] = {3, 5, 4};
+            int **mtx = new int *[mtxRows];
+
+            for (int i = 0; i < mtxRows; ++i) {
+                mtx[i] = new int[mtxRowsCols[i]];
+                for (int j = 0; j < mtxRowsCols[i]; ++j) {
+                    mtx[i][j] = j;
+                }
+            }
+
+            matrixElementsSum(mtx, mtxRows, mtxRowsCols);
+
+            int tmp[] = {16, 2, 77, 29};
+            vector<int> vect(tmp, tmp + sizeof(tmp) / sizeof(int));
+
+            minMaxElements_critical(vect);
+
+            minMaxElements_lock(vect);
+
+            matrixTransformations_sections(mtx, mtxRows, mtxRowsCols);
+
+            for (int k = 0; k < 2; k++)
+                delete[] mtx[k];
+        }
     };
 }
+
+#endif

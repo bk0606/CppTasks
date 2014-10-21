@@ -1,9 +1,14 @@
 #include "Generator.h"
-#include <stdlib.h>
-
-using namespace std;
 
 namespace utils {
+
+    int* Generator::generateArray(int size, int dispersion) {
+        int* array = new int[size];
+        for (int i = 0; i < size; ++i) {
+            array[i] = rand() % dispersion;
+        }
+        return array;
+    }
 
     vector<int> Generator::generateVector(int size, int dispersion) {
         vector<int> vect;
@@ -13,7 +18,7 @@ namespace utils {
         return vect;
     }
 
-    vector<vector<int> > Generator::generateMatrix(int rows, int cols, int dispersion) {
+    vector<vector<int> > Generator::generateMatrixVector(int rows, int cols, int dispersion) {
         vector<vector<int> > vect;
         for (int i = 0; i < rows; ++i) {
             vector<int> tmpVect;
@@ -24,5 +29,4 @@ namespace utils {
         }
         return vect;
     }
-
 }
