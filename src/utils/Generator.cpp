@@ -10,6 +10,8 @@ namespace utils {
         return array;
     }
 
+
+
     vector<int> Generator::generateVector(int size, int dispersion) {
         vector<int> vect;
         for (int i = 0; i < size; ++i) {

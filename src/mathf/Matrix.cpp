@@ -1,58 +1,81 @@
-#include <iostream>
-#include <vector>
+#include <assert.h>
+#include "Matrix.h"
 
-using namespace std;
+namespace mathf {
 
-namespace parallel_tasks {
+    void Matrix::assignData(int *dataArray, unsigned rowsCount, unsigned colsCount) {
+        colsCnt = colsCount;
+        rowsCnt = rowsCount;
+        elemsCnt = colsCnt * rowsCnt;
+        _data = dataArray;
+    }
 
-    class Matrix {
-    public:
-        void Sum(Matrix &matrixB) {
-            if (rowsCount_ != matrixB.getRowsCount() || colsCount_ != matrixB.getColsCount()) {
-                // TODO: Throw exception
-            };
-            for (int i = 0; i < rowsCount_; ++i) {
-                for (int j = 0; j < colsCount_; ++j) {
-                    this->setItem(i, j, this->getItem(i, j) + matrixB.getItem(i, j));
+    Matrix& Matrix::operator= (Matrix rightMtx) {
+        if (this == &rightMtx) {
+            return *this;
+        }
+        colsCnt = rightMtx.colsCnt;
+        rowsCnt = rightMtx.rowsCnt;
+        elemsCnt = rightMtx.elemsCnt;
+        _data = &rightMtx(0, 0);
+        return *this;
+    }
+
+    Matrix Matrix::operator+ (const Matrix& withMtx) const {
+        assert(withMtx.rowsCnt == rowsCnt && withMtx.colsCnt == colsCnt);
+        Matrix resultMtx(rowsCnt, colsCnt);
+        // TODO: May be parallel
+        for (unsigned row = 0; row < rowsCnt; ++row) {
+            for (unsigned col = 0; col < colsCnt; ++col) {
+                resultMtx(row, col) = _data[colsCnt * row + col] + withMtx(row, col);
+            }
+        }
+        return resultMtx;
+    }
+
+    Matrix Matrix::operator* (const Matrix& toMtx) const {
+        assert(colsCnt == toMtx.rowsCnt);
+        Matrix resultMtx = Matrix(rowsCnt, toMtx.colsCnt);
+        // TODO: May be parallel
+        for (unsigned aRow = 0; aRow < rowsCnt; ++aRow) {
+            for (unsigned bCol = 0; bCol < toMtx.colsCnt; ++bCol) {
+                for (unsigned bRow = 0; bRow < toMtx.rowsCnt; ++bRow) {
+                    resultMtx(aRow, bCol) += _data[colsCnt * aRow + bRow] * toMtx(bRow, bCol);
                 }
             }
-        };
-
-        void Multiply(Matrix &matrix) {
-            // TODO: Realize
-        };
-
-        int getItem(int row, int col) {
-            return matrix_[row][col];
         }
-        void setItem(int row, int col, int value) {
-            matrix_[row][col] = value;
-        }
+        return resultMtx;
+    }
 
-        int getRowsCount() const {
-            return rowsCount_;
-        }
+    int& Matrix::operator() (unsigned rowIndex, unsigned colIndex) {
+        assert(rowIndex < rowsCnt && colIndex < colsCnt);
+        return _data[colsCnt * rowIndex + colIndex];
+    }
 
-        int getColsCount() const {
-            return colsCount_;
-        }
+    int Matrix::operator() (unsigned rowIndex, unsigned colIndex) const {
+        assert(rowIndex < rowsCnt && colIndex < colsCnt);
+        return _data[colsCnt * rowIndex + colIndex];
+    }
 
-        vector<int> getRow(int number) {
-            return matrix_[number];
-        }
+    Matrix::Matrix(int *dataArray, unsigned rowsCnt, unsigned colsCnt)
+            : rowsCnt(rowsCnt), colsCnt(colsCnt) {
+        elemsCnt = rowsCnt * colsCnt;
+        _data = dataArray;
+    }
 
-        Matrix(unsigned int rowsCount, unsigned int colsCount) {
-            rowsCount_ = rowsCount;
-            colsCount_ = colsCount;
-            matrix_ = vector< vector<int> > (rowsCount, vector<int>(colsCount, 0));
-        }
+    Matrix::Matrix(unsigned rowsCnt, unsigned colsCnt)
+            : rowsCnt(rowsCnt), colsCnt(colsCnt) {
+        elemsCnt = rowsCnt * colsCnt;
+        _data = new int[elemsCnt];
+    }
 
-        ~Matrix() {
-            matrix_.clear();
-        }
-    private:
-        vector< vector<int> > matrix_;
-        int rowsCount_, colsCount_;
-    };
+    Matrix::Matrix(const Matrix &copiedMtx) {
+        rowsCnt = copiedMtx.rowsCnt;
+        colsCnt = copiedMtx.colsCnt;
+        _data = copiedMtx._data;
+    }
 
+    Matrix::Matrix() : rowsCnt(0), colsCnt(0), elemsCnt(0) {}
+
+    Matrix::~Matrix() {}
 }

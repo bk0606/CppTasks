@@ -13,6 +13,9 @@ set( CMAKE_BUILD_TYPE RELEASE )
 ### Build directory
 set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/builds )
 
+### Warning level
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
 ### Source code. Recursively includes all files in SRC_DIR exclude .glsl files.
 file(GLOB_RECURSE SRC ${SRC_DIR} ${SRC_DIR}/*)
 FOREACH(_FILE ${SRC})

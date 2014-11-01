@@ -85,6 +85,7 @@ namespace parallel_tasks {
                     MPI_Send(array + offset, sentElemsCnt, MPI_INT, process, 0, MPI_COMM_WORLD);
                 }
             }
+
         }
 
         static void task5(int argc, char** argv) {

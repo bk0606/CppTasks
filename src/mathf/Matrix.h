@@ -2,11 +2,30 @@
 #define MATRIX_H
 
 namespace mathf {
+
     class Matrix {
     public:
-        // TODO: Realize
+        unsigned rowsCnt, colsCnt, elemsCnt;
+
+        void        assignData(int *dataArray, unsigned rowsCount, unsigned colsCount);
+        Matrix&     operator= (Matrix rightMtx);
+        Matrix      operator+ (const Matrix& withMtx) const;
+        Matrix      operator* (const Matrix& toMtx) const;
+        int&        operator() (unsigned rowIndex, unsigned colIndex);
+        int         operator() (unsigned rowIndex, unsigned colIndex) const;
+
+                    Matrix(unsigned rowsCnt, unsigned colsCnt);
+                    Matrix(int *dataArray, unsigned rowsCnt, unsigned colsCnt);
+                    Matrix(const Matrix& copiedMtx);
+                    Matrix();
+                    ~Matrix();
+
+    private:
+        int* _data;
     };
+
 }
+
 #endif
 
 

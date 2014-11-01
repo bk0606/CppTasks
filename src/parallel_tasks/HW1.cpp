@@ -66,18 +66,19 @@ namespace parallel_tasks {
 
         static vector<vector<int> > MatrixProduct(vector<vector<int> > &A, vector<vector<int> > &B) {
             unsigned long aRows = A.size(),
-                    aCols = A[0].size(),
-                    bCols = B[0].size();
+                          bRows = B.size(),
+                          aCols = A[0].size(),
+                          bCols = B[0].size();
             vector<vector<int> > C(aRows, vector<int>(bCols, 0));
-            int aRow;
-            if (aCols != B.size()) {
+            if (aCols != bRows) {
                 cout << "Error: Matrix A should have number of rows equal to the number of cols in the matrix B.";
                 return C;
             }
+            int aRow;
 #pragma omp parallel for private(aRow)
             for (aRow = 0; aRow < aRows; ++aRow) {
                 for (int bCol = 0; bCol < bCols; ++bCol) {
-                    for (int bRow = 0; bRow < bCols; ++bRow) {
+                    for (int bRow = 0; bRow < bRows; ++bRow) {
                         C[aRow][bCol] += A[aRow][bRow] * B[bRow][bCol];
                     }
                 }
