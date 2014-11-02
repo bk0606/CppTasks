@@ -43,4 +43,22 @@ namespace utils {
             cout << endl;
         }
     }
+
+    void Console::printMatrix(int *const matrix, int rows, int cols) {
+        for (unsigned int i = 0; i < rows; ++i) {
+            if (i == 0) {
+                int margin = 10;
+                for (unsigned int j = 0; j < cols; j++) {
+                    if (j > 0) margin = 6;
+                    cout << setw(margin) << "[" << j+1 << "]";
+                }
+                cout << endl;
+            }
+            cout << "[" << i+1 << "]" << setw(4);
+            for (unsigned int j = 0; j < cols; ++j) {
+                cout << setw(8) << matrix[i * cols + j];
+            }
+            cout << endl;
+        }
+    }
 }
