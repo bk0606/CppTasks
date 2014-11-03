@@ -1,9 +1,4 @@
-#include <assert.h>
-#include <bits/stl_algobase.h>
-#include "../utils/Console.h"
 #include "Matrix.h"
-
-using namespace utils;
 
 namespace mathf {
 
@@ -19,10 +14,20 @@ namespace mathf {
         return Matrix(tmpData, colsCnt, rowsCnt);
     }
 
+    Matrix Matrix::getDiagonal(const Matrix &matrix) {
+        unsigned len = matrix.colsCnt < matrix.rowsCnt ? matrix.colsCnt : matrix.rowsCnt;
+        int* diagonalData = new int[len];
+        for (unsigned i = 0; i < len; ++i) {
+            diagonalData[i] = matrix(i,i);
+        }
+        return Matrix(diagonalData, len, 1);
+    }
+
     void Matrix::assignData(int *dataArray, unsigned rowsCount, unsigned colsCount) {
         colsCnt = colsCount;
         rowsCnt = rowsCount;
         elemsCnt = colsCnt * rowsCnt;
+        // TODO: Delete old _data array (1)
         _data = new int[elemsCnt];
         std::copy(&dataArray[0], &dataArray[elemsCnt], _data);
     }

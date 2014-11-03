@@ -2,13 +2,13 @@
 
 namespace utils {
 
-    void Console::printArray(int *array, int size) {
-        for (int i = 0; i < size; ++i) {
+    void Console::printArray(int *array, unsigned size) {
+        for (unsigned i = 0; i < size; ++i) {
             printf(" [%d]: %d; ", i, array[i]);
         }
     }
 
-    void Console::printArray(char const *title, int *array, int size) {
+    void Console::printArray(char const *title, int *array, unsigned size) {
         puts(title);
         printArray(array, size);
         puts("\n");
@@ -44,7 +44,7 @@ namespace utils {
         }
     }
 
-    void Console::printMatrix(int *const matrix, int rows, int cols) {
+    void Console::printMatrix(int *const matrix, unsigned rows, unsigned cols) {
         for (unsigned int i = 0; i < rows; ++i) {
             if (i == 0) {
                 int margin = 10;

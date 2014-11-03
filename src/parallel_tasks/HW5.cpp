@@ -21,9 +21,6 @@ namespace parallel_tasks {
     class HW5 {
     public:
 
-        typedef void (*ptr_arraysHandlerDelegate)(int *Z, int *X, int *Y, int arraySize,
-                int procRank, int *offsets, int* blocksSizes);
-
         static void divideArray(int arraySize, int blockSize, int factor, int partsCnt, int *offsets, int *blocksSizes) {
             for (int process = 0; process < partsCnt; ++process) {
                 int offset = process * blockSize;
@@ -41,11 +38,9 @@ namespace parallel_tasks {
             }
         }
 
-        static void task1(int procRank, int procCnt, ptr_arraysHandlerDelegate arraysHandler) {
-            int arraySize = 10,
-                blockSize;
+        static void task1A(int procRank, int procCnt) {
+            unsigned arraySize = 10, blockSize;
             int *Z, *X, *Y;
-            blockSize = arraySize % procCnt == 0 ? arraySize / procCnt : arraySize / procCnt + 1;
 
             if (procRank == MASTER_PROCESS) {
                 Z = new int[arraySize];
@@ -56,13 +51,8 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(arraySize, blockSize, 1, procCnt, offsets, blocksSizes);
-
-            arraysHandler(Z, X, Y, arraySize, procRank, offsets, blocksSizes);
-        }
-
-        static void task1ADelegate(int *Z, int *X, int *Y, int arraySize, int procRank, int *offsets, int* blocksSizes) {
-            int blockSize = blocksSizes[procRank];
+            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            blockSize = (unsigned) blocksSizes[procRank];
             int *ZArrayBlock = new int[blockSize],
                 *XArrayBlock = new int[blockSize],
                 *YArrayBlock = new int[blockSize];
@@ -72,7 +62,7 @@ namespace parallel_tasks {
             MPI_Scatterv(Y, blocksSizes, offsets, MPI_INT, YArrayBlock,
                     blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
 
-            for (int i = 0; i < blockSize; ++i) {
+            for (unsigned i = 0; i < blockSize; ++i) {
                 ZArrayBlock[i] = ALPHA * XArrayBlock[i] + BETA * YArrayBlock[i] + GAMMA;
             }
 
@@ -84,8 +74,20 @@ namespace parallel_tasks {
             }
         }
 
-        static void task1BDelegate(int *Z, int *X, int *Y, int arraySize, int procRank, int *offsets, int* blocksSizes) {
-            int blockSize = blocksSizes[procRank];
+        static void task1B(int procRank, int procCnt) {
+            unsigned arraySize = 10, blockSize;
+            int *X, *Y;
+
+            if (procRank == MASTER_PROCESS) {
+                X = Generator::generateArray(arraySize, 10);
+                Y = Generator::generateArray(arraySize, 10);
+                Console::printArray("Generated X: ", X, arraySize);
+                Console::printArray("Generated Y: ", Y, arraySize);
+            }
+
+            int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
+            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            blockSize = (unsigned) blocksSizes[procRank];
             int *XArrayBlock = new int[blockSize],
                 *YArrayBlock = new int[blockSize];
 
@@ -94,7 +96,7 @@ namespace parallel_tasks {
             MPI_Scatterv(Y, blocksSizes, offsets, MPI_INT, YArrayBlock,
                     blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
 
-            for (int i = 0; i < blockSize; ++i) {
+            for (unsigned i = 0; i < blockSize; ++i) {
                 YArrayBlock[i] = ALPHA * XArrayBlock[i] + BETA * YArrayBlock[i] + GAMMA;
             }
 
@@ -106,8 +108,21 @@ namespace parallel_tasks {
             }
         }
 
-        static void task1CDelegate(int *Z, int *X, int *Y, int arraySize, int procRank, int *offsets, int* blocksSizes) {
-            int blockSize = blocksSizes[procRank];
+        static void task1C(int procRank, int procCnt) {
+            unsigned arraySize = 10, blockSize;
+            int *Z, *X, *Y;
+
+            if (procRank == MASTER_PROCESS) {
+                Z = new int[arraySize];
+                X = Generator::generateArray(arraySize, 10);
+                Y = Generator::generateArray(arraySize, 10);
+                Console::printArray("Generated X: ", X, arraySize);
+                Console::printArray("Generated Y: ", Y, arraySize);
+            }
+
+            int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
+            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            blockSize = (unsigned) blocksSizes[procRank];
             int *ZArrayBlock = new int[blockSize],
                 *XArrayBlock = new int[blockSize],
                 *YArrayBlock = new int[blockSize];
@@ -117,7 +132,7 @@ namespace parallel_tasks {
             MPI_Scatterv(Y, blocksSizes, offsets, MPI_INT, YArrayBlock,
                     blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
 
-            for (int i = 0; i < blockSize; ++i) {
+            for (unsigned i = 0; i < blockSize; ++i) {
                 ZArrayBlock[i] = ALPHA * XArrayBlock[i] * XArrayBlock[i] * YArrayBlock[i];
             }
 
@@ -129,8 +144,20 @@ namespace parallel_tasks {
             }
         }
 
-        static void task1DDelegate(int *Z, int *X, int *Y, int arraySize, int procRank, int *offsets, int* blocksSizes) {
-            int blockSize = blocksSizes[procRank];
+        static void task1D(int procRank, int procCnt) {
+            unsigned arraySize = 10, blockSize;
+            int *X, *Y;
+
+            if (procRank == MASTER_PROCESS) {
+                X = Generator::generateArray(arraySize, 10);
+                Y = Generator::generateArray(arraySize, 10);
+                Console::printArray("Generated X: ", X, arraySize);
+                Console::printArray("Generated Y: ", Y, arraySize);
+            }
+
+            int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
+            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            blockSize = (unsigned) blocksSizes[procRank];
             int *ZArrayBlock = new int[blockSize],
                 *XArrayBlock = new int[blockSize],
                 *YArrayBlock = new int[blockSize];
@@ -140,7 +167,7 @@ namespace parallel_tasks {
             MPI_Scatterv(Y, blocksSizes, offsets, MPI_INT, YArrayBlock,
                     blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
 
-            for (int i = 0; i < blockSize; ++i) {
+            for (unsigned i = 0; i < blockSize; ++i) {
                 ZArrayBlock[i] = YArrayBlock[i];
                 YArrayBlock[i] = XArrayBlock[i];
                 XArrayBlock[i] = ZArrayBlock[i];
@@ -262,7 +289,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(rows, (rows + 1) / 2, cols, procCnt, offsets, blocksSizes);
+            divideArray(rows, (rows + 1) / 2,/* TODO: BUG! */ cols, procCnt, offsets, blocksSizes);
             int blockSize = blocksSizes[procRank];
             Matrix mtxAPart(blockSize/cols, cols);
             MPI_Scatterv(mtxA.begin(), blocksSizes, offsets, MPI_INT, mtxAPart.begin(),
@@ -278,17 +305,165 @@ namespace parallel_tasks {
 
         }
 
+        static void task3A(int procRank, int procCnt) {
+            unsigned rows = 3, cols = 4, elemsCnt = rows * cols,
+                     diagonalLen = rows < cols ? rows : cols;
+            Matrix matrix(rows, cols);
+            vector<int> diagonalVect(diagonalLen);
+
+            if (procRank == MASTER_PROCESS) {
+                matrix.assignData(Generator::generateArray(elemsCnt, 3), rows, cols);
+                matrix.printToConsole("\nGenerated matrix: \n");
+            }
+
+            int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
+            divideArray(diagonalLen, (diagonalLen + 1) / procCnt, cols, procCnt, offsets, blocksSizes);
+            int blockSize = blocksSizes[procRank];
+            unsigned blockRows = blockSize / cols,
+                     offsetRows = offsets[procRank] / cols;
+            vector<int> diagonalVectPart(blockRows);
+            Matrix matrixPart(blockRows, cols);
+            MPI_Scatterv(matrix.begin(), blocksSizes, offsets, MPI_INT, matrixPart.begin(),
+                    blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
+
+            for (unsigned i = 0; i < blockRows; ++i) {
+                diagonalVectPart[i] = matrixPart(i, offsetRows + i);
+            }
+
+            for (int j = 0; j < procCnt; ++j) {
+                offsets[j] = offsets[j] / cols;
+                blocksSizes[j] = blocksSizes[j] / cols;
+            }
+            MPI_Gatherv(&diagonalVectPart[0], blockRows, MPI_INT, &diagonalVect[0],
+                    blocksSizes, offsets, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
+            if (procRank == MASTER_PROCESS) {
+                printf("\nResult diagonal vector: ");
+                Console::printVector(diagonalVect);
+            }
+        }
+
+        static void task3B(int procRank, int procCnt) {
+            unsigned rows = 3, cols = 3, elemsCnt = rows * cols;
+            Matrix matrix(rows, cols), vector(rows, 1);
+
+            if (procRank == MASTER_PROCESS) {
+                matrix.assignData(Generator::generateArray(elemsCnt, 3), rows, cols);
+                vector.assignData(Generator::generateArray(rows, 3), rows, 1);
+                matrix.printToConsole("\nGenerated matrix: \n");
+                vector.printToConsole("\nGenerated vector: \n");
+                for (int process = 1; process < procCnt; ++process) {
+                    MPI_Send(vector.begin(), rows, MPI_INT, process, 0, MPI_COMM_WORLD);
+                }
+            }
+            else {
+                MPI_Status status;
+                MPI_Recv(vector.begin(), rows, MPI_INT, MASTER_PROCESS, 0, MPI_COMM_WORLD, &status);
+            }
+
+            int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
+            divideArray(rows, (rows + 1) / procCnt, cols, procCnt, offsets, blocksSizes);
+            int blockSize = blocksSizes[procRank];
+            unsigned blockRows = blockSize / cols;
+            Matrix matrixPart(blockRows, cols);
+
+            MPI_Scatterv(matrix.begin(), blocksSizes, offsets, MPI_INT, matrixPart.begin(),
+                    blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
+
+            Matrix resultVectPart = matrixPart * vector;
+
+            for (int j = 0; j < procCnt; ++j) {
+                offsets[j] = offsets[j] / cols;
+                blocksSizes[j] = blocksSizes[j] / cols;
+            }
+            MPI_Gatherv(resultVectPart.begin(), blockRows, MPI_INT, vector.begin(),
+                    blocksSizes, offsets, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
+            if (procRank == MASTER_PROCESS) {
+                vector.printToConsole("\nResult vector: \n");
+            }
+        }
+
+        static void task4A(int procRank, int procCnt) {
+            unsigned n = 1000;
+            char* sending = new char[n];
+            if (procRank == MASTER_PROCESS) {
+                for (unsigned i = 0; i < n; ++i) {
+                    sending[i] = 'a';
+                }
+            }
+
+            MPI_Barrier(MPI_COMM_WORLD);
+            double start = MPI_Wtime();
+
+            if (procRank == MASTER_PROCESS) {
+                MPI_Status status;
+                MPI_Send(sending, n, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
+                MPI_Recv(sending, n, MPI_CHAR, 1, 1, MPI_COMM_WORLD, &status);
+            } else if (procRank == 1) {
+                MPI_Status status;
+                MPI_Recv(sending, n, MPI_CHAR, MASTER_PROCESS, 0, MPI_COMM_WORLD, &status);
+                MPI_Send(sending, n, MPI_CHAR, MASTER_PROCESS, 1, MPI_COMM_WORLD);
+            }
+
+            MPI_Barrier(MPI_COMM_WORLD);
+            double end = MPI_Wtime();
+
+            if (procRank == MASTER_PROCESS) {
+                printf("\n Result time: %f \n", end - start);
+            }
+        }
+
+        static void task4B(int procRank, int procCnt) {
+            unsigned n = 1000;
+            char* sendingA = new char[n];
+            char* sendingB = new char[n];
+            if (procRank == MASTER_PROCESS) {
+                for (unsigned i = 0; i < n; ++i) {
+                    sendingA[i] = 'a';
+                    sendingB[i] = 'b';
+                }
+            }
+
+            MPI_Barrier(MPI_COMM_WORLD);
+            double start = MPI_Wtime();
+
+            MPI_Request sendRequest;
+            MPI_Request receiveRequest;
+            if (procRank == MASTER_PROCESS) {
+                MPI_Isend(sendingA, n, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &sendRequest);
+                MPI_Irecv(sendingB, n, MPI_CHAR, 1, 1, MPI_COMM_WORLD, &receiveRequest);
+            } else if (procRank == 1) {
+                MPI_Isend(sendingB, n, MPI_CHAR, MASTER_PROCESS, 1, MPI_COMM_WORLD, &sendRequest);
+                MPI_Irecv(sendingA, n, MPI_CHAR, MASTER_PROCESS, 0, MPI_COMM_WORLD, &receiveRequest);
+            }
+            MPI_Status status;
+            MPI_Wait(&sendRequest, &status);
+            MPI_Wait(&receiveRequest, &status);
+
+            MPI_Barrier(MPI_COMM_WORLD);
+            double end = MPI_Wtime();
+
+            if (procRank == MASTER_PROCESS) {
+                printf("\nResult time: %f \n", end - start);
+            }
+        }
+
         static void run(int argc, char **argv) {
-            int procRank, procCnt;
+            int processRank, processesCnt;
             MPI_Init (&argc, &argv);
-            MPI_Comm_rank (MPI_COMM_WORLD, &procRank);
-            MPI_Comm_size (MPI_COMM_WORLD, &procCnt);
+            MPI_Comm_rank (MPI_COMM_WORLD, &processRank);
+            MPI_Comm_size (MPI_COMM_WORLD, &processesCnt);
 
-//            task1(procRank, procCnt, task1BDelegate);
-//            task2A(procRank, procCnt);
-//            task2B(procRank, procCnt);
-            task2C(procRank, procCnt);
-
+//            task1A(processRank, processesCnt);
+            task1B(processRank, processesCnt);
+//            task1A(processRank, processesCnt);
+//            task1A(processRank, processesCnt);
+//            task2A(processRank, processesCnt);
+//            task2B(processRank, processesCnt);
+//            task2C(processRank, processesCnt);
+//            task3A(processRank, processesCnt);
+//            task3B(processRank, processesCnt);
+//            task4A(processRank, processesCnt);
+//            task4B(processRank, processesCnt);
 
             MPI_Finalize();
         }
