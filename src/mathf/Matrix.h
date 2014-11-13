@@ -11,6 +11,8 @@ using namespace utils;
 namespace mathf {
 
     class Matrix {
+    private:
+        int* _data;
     public:
         unsigned rowsCnt, colsCnt, elemsCnt;
 
@@ -33,10 +35,8 @@ namespace mathf {
                     Matrix(unsigned rowsCnt, unsigned colsCnt);
                     Matrix(int* dataArray, unsigned rowsCnt, unsigned colsCnt);
                     Matrix(const Matrix& copyingMtx);
+                    Matrix();
                     ~Matrix();
-
-    private:
-        int* _data;
     };
 
 }

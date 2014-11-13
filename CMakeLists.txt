@@ -4,6 +4,9 @@ cmake_minimum_required(VERSION 2.8.4)
 project(CppTasks)
 set (APP_NAME CppTasks)
 
+### Enable C++11 support
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 ## Sources directory
 set (SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 

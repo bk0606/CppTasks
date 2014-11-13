@@ -24,10 +24,10 @@ namespace mathf {
     }
 
     void Matrix::assignData(int *dataArray, unsigned rowsCount, unsigned colsCount) {
+        // TODO: Ask about `delete [] _data` here
         colsCnt = colsCount;
         rowsCnt = rowsCount;
         elemsCnt = colsCnt * rowsCnt;
-        // TODO: Delete old _data array (1)
         _data = new int[elemsCnt];
         std::copy(&dataArray[0], &dataArray[elemsCnt], _data);
     }
@@ -120,5 +120,8 @@ namespace mathf {
         if (elemsCnt > 0) {
             delete[] _data;
         }
+    }
+
+    Matrix::Matrix() : _data(NULL), rowsCnt(0), colsCnt(0), elemsCnt(0)  {
     }
 }
