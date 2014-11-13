@@ -7,7 +7,7 @@
 #include "../mathf/Matrix.h"
 
 #define MASTER_PROCESS 0
-#define OUT_OF_ARRAY -1
+#define OUT_OF_ARRAY 0
 
 #define ALPHA 1
 #define BETA 1
@@ -51,7 +51,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            divideArray(arraySize, (arraySize / procCnt) + 1, 1, procCnt, offsets, blocksSizes);
             blockSize = (unsigned) blocksSizes[procRank];
             int *ZArrayBlock = new int[blockSize],
                 *XArrayBlock = new int[blockSize],
@@ -86,7 +86,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            divideArray(arraySize, (arraySize / procCnt) + 1, 1, procCnt, offsets, blocksSizes);
             blockSize = (unsigned) blocksSizes[procRank];
             int *XArrayBlock = new int[blockSize],
                 *YArrayBlock = new int[blockSize];
@@ -121,7 +121,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            divideArray(arraySize, (arraySize / procCnt) + 1, 1, procCnt, offsets, blocksSizes);
             blockSize = (unsigned) blocksSizes[procRank];
             int *ZArrayBlock = new int[blockSize],
                 *XArrayBlock = new int[blockSize],
@@ -156,7 +156,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(arraySize, (arraySize + 1)/ procCnt, 1, procCnt, offsets, blocksSizes);
+            divideArray(arraySize, (arraySize / procCnt) + 1, 1, procCnt, offsets, blocksSizes);
             blockSize = (unsigned) blocksSizes[procRank];
             int *ZArrayBlock = new int[blockSize],
                 *XArrayBlock = new int[blockSize],
@@ -207,7 +207,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(rows, (rows + 1) / 2, cols, procCnt, offsets, blocksSizes);
+            divideArray(rows, (rows / 2) + 1, cols, procCnt, offsets, blocksSizes);
             int blockSize = blocksSizes[procRank];
             Matrix mtxAPart(blockSize/cols, cols);
             MPI_Scatterv(mtxA.begin(), blocksSizes, offsets, MPI_INT, mtxAPart.begin(),
@@ -241,7 +241,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(rows, (rows + 1) / 2, cols, procCnt, offsets, blocksSizes);
+            divideArray(rows, (rows / procCnt) + 1, cols, procCnt, offsets, blocksSizes);
             unsigned blockSize = (unsigned) blocksSizes[procRank],
                     blockRows = blockSize/cols;
             Matrix mtxAPart(blockRows, cols), mtxBPart(blockRows, cols),
@@ -289,7 +289,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(rows, (rows + 1) / 2,/* TODO: BUG! */ cols, procCnt, offsets, blocksSizes);
+            divideArray(rows, (rows / procCnt) + 1, cols, procCnt, offsets, blocksSizes);
             int blockSize = blocksSizes[procRank];
             Matrix mtxAPart(blockSize/cols, cols);
             MPI_Scatterv(mtxA.begin(), blocksSizes, offsets, MPI_INT, mtxAPart.begin(),
@@ -317,7 +317,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(diagonalLen, (diagonalLen + 1) / procCnt, cols, procCnt, offsets, blocksSizes);
+            divideArray(diagonalLen, (diagonalLen / procCnt) + 1, cols, procCnt, offsets, blocksSizes);
             int blockSize = blocksSizes[procRank];
             unsigned blockRows = blockSize / cols,
                      offsetRows = offsets[procRank] / cols;
@@ -361,7 +361,7 @@ namespace parallel_tasks {
             }
 
             int *offsets = new int[procCnt], *blocksSizes = new int[procCnt];
-            divideArray(rows, (rows + 1) / procCnt, cols, procCnt, offsets, blocksSizes);
+            divideArray(rows, (rows / procCnt) + 1, cols, procCnt, offsets, blocksSizes);
             int blockSize = blocksSizes[procRank];
             unsigned blockRows = blockSize / cols;
             Matrix matrixPart(blockRows, cols);
@@ -454,16 +454,16 @@ namespace parallel_tasks {
             MPI_Comm_size (MPI_COMM_WORLD, &processesCnt);
 
 //            task1A(processRank, processesCnt);
-            task1B(processRank, processesCnt);
-//            task1A(processRank, processesCnt);
-//            task1A(processRank, processesCnt);
+//            task1B(processRank, processesCnt);
+//            task1C(processRank, processesCnt);
+//            task1D(processRank, processesCnt);
 //            task2A(processRank, processesCnt);
 //            task2B(processRank, processesCnt);
 //            task2C(processRank, processesCnt);
 //            task3A(processRank, processesCnt);
 //            task3B(processRank, processesCnt);
 //            task4A(processRank, processesCnt);
-//            task4B(processRank, processesCnt);
+            task4B(processRank, processesCnt);
 
             MPI_Finalize();
         }
