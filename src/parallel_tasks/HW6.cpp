@@ -2,6 +2,7 @@
 #define HW6_CPP
 
 #include <mpi.h>
+#include <limits.h>
 #include "../utils/Generator.h"
 #include "../utils/Console.h"
 #include "../mathf/Matrix.h"
@@ -120,6 +121,100 @@ namespace parallel_tasks {
             }
         }
 
+        struct LocData {
+            float value;
+            int index;
+        };
+
+        static void task3(int procRank, int procCnt) {
+            unsigned arraySize = 10;
+            LocData *array = new LocData[arraySize];
+
+            if (procRank == MASTER_PROCESS) {
+                for (unsigned i = 0; i < arraySize; ++i) {
+                    array[i].value = rand() % 30;
+                    array[i].index = i;
+                }
+                printf("\nGenerated array: ");
+                for (unsigned i = 0; i < arraySize; ++i) {
+                    printf(" [%d]: %f", i, array[i].value);
+                }
+            }
+
+            int *offsets = new int[procCnt],
+                *blocksSizes = new int[procCnt];
+            divideArray(arraySize, (arraySize / procCnt) + 1, 1, procCnt, offsets, blocksSizes);
+            unsigned blockSize = (unsigned) blocksSizes[procRank];
+
+            if (blockSize != 0) {
+                LocData *arrayPart = new LocData[blockSize];
+                MPI_Scatterv(array, blocksSizes, offsets, MPI_FLOAT_INT, arrayPart,
+                        blockSize, MPI_FLOAT_INT, MASTER_PROCESS, MPI_COMM_WORLD);
+
+                LocData localMinLoc;
+                localMinLoc.value = arrayPart[0].value;
+                localMinLoc.index = arrayPart[0].index;
+                for (unsigned i = 1; i < blockSize; ++i) {
+                    if (arrayPart[i].value < localMinLoc.value) {
+                        localMinLoc.value = arrayPart[i].value;
+                        localMinLoc.index = arrayPart[i].index;
+                    }
+                }
+
+                LocData globalMinLoc;
+                MPI_Reduce(&localMinLoc, &globalMinLoc, 1, MPI_FLOAT_INT, MPI_MINLOC, MASTER_PROCESS, MPI_COMM_WORLD);
+
+                if (procRank == MASTER_PROCESS) {
+                    printf("\n\n Minloc value: %f ", globalMinLoc.value);
+                    printf("\n Minloc index: %d \n", globalMinLoc.index);
+                }
+
+            }
+        }
+
+        static void task4(int procRank, int procCnt) {
+            unsigned rows = 3, cols = 3, elemsCnt = rows * cols;
+            Matrix matrix(rows, cols);
+            int localMaxNorm = INT_MIN;
+
+            if (procRank == MASTER_PROCESS) {
+                matrix.assignData(Generator::generateArray(elemsCnt, 3), rows, cols);
+                matrix.printToConsole("\nGenerated matrix: ");
+            }
+
+            int *offsets = new int[procCnt],
+                *blocksSizes = new int[procCnt];
+            unsigned blockSize = (rows % procCnt) == 0 ? rows / procCnt : (rows / procCnt) + 1 ;
+            divideArray(rows, blockSize, cols, procCnt, offsets, blocksSizes);
+            blockSize = (unsigned) blocksSizes[procRank];
+
+            if (blockSize != 0) {
+                unsigned blockRows = blockSize / cols;
+                Matrix matrixPart(blockRows, cols);
+                MPI_Scatterv(matrix.begin(), blocksSizes, offsets, MPI_INT, matrixPart.begin(),
+                        blockSize, MPI_INT, MASTER_PROCESS, MPI_COMM_WORLD);
+
+                matrixPart.printToConsole("\nScattered mtx: ");
+
+                int rowNorm = 0;
+                for (unsigned i = 0; i < blockRows; ++i) {
+                    rowNorm = 0;
+                    for (unsigned j = 0; j < cols; ++j) {
+                        rowNorm += abs(matrixPart(i, j));
+                    }
+                    if (rowNorm > localMaxNorm) {
+                        localMaxNorm = rowNorm;
+                    }
+                }
+            }
+
+            int globalMaxNorm;
+            MPI_Reduce(&localMaxNorm, &globalMaxNorm, 1, MPI_INT, MPI_MAX, MASTER_PROCESS, MPI_COMM_WORLD);
+            if (procRank == MASTER_PROCESS) {
+                printf("\n Global max norm: %d", globalMaxNorm);
+            }
+        }
+
         static void task5(int procRank, int procCnt) {
             unsigned rows = 4, cols = 4, elemsCnt = rows * cols;
             Matrix mtxA(rows, cols), mtxB(rows, cols), resultMtx(rows, cols);
@@ -197,7 +292,9 @@ namespace parallel_tasks {
 
 //            task1(processRank, processesCnt);
 //            task2(processRank, processesCnt);
-            task5(processRank, processesCnt);
+//            task3(processRank, processesCnt);
+            task4(processRank, processesCnt);
+//            task5(processRank, processesCnt);
 //            task6(processRank, processesCnt);
         }
     };

@@ -9,9 +9,14 @@ using namespace std;
 namespace utils {
     class Generator {
     public:
-        static int* generateArray(int size, int dispersion);
-        static vector<int> generateVector(int size, int dispersion);
-        static vector<vector<int> > generateMatrixVector(int rows, int cols, int dispersion);
+        static
+        int*                    generateArray(int size, int dispersion);
+
+        static
+        vector<int>             generateVector(int size, int dispersion);
+
+        static
+        vector<vector<int> >    generateMatrixVector(int rows, int cols, int dispersion);
     };
 }
 

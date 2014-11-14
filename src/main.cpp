@@ -1,4 +1,4 @@
-#include "parallel_tasks/HW5.cpp"
+#include "parallel_tasks/HW6.cpp"
 #include "mathf/Matrix.h"
 #include "utils/Console.h"
 
@@ -7,6 +7,6 @@ using namespace mathf;
 using namespace utils;
 
 int main (int argc, char** argv) {
-    HW5::run(argc, argv);
+    HW6::run(argc, argv);
     return 0;
 }
