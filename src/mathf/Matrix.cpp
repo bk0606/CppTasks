@@ -37,7 +37,7 @@ namespace mathf {
     }
 
     int* Matrix::end() const {
-        return &_data[elemsCnt];
+        return &_data[elemsCnt - 1];
     }
 
     void Matrix::printToConsole(char const* title) {
