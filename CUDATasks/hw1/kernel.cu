@@ -45,7 +45,6 @@ void task1() {
 	printf("\n\nResults on host.");
 
 	printf("\n\nvecBlockIdx: \n");
-	// ¬ывел как матрицу просто дл€ большей нагл€дности
 	Console::printMatrix(vecBlockIdx, 16, 8);
 
 	printf("\n\nvecThreadIdx: \n");

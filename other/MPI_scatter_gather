@@ -1,0 +1,47 @@
+// int MPI_Bcast(void &buf, int count, MPI_Datatype, int source, MPI_COMM com) - отправляет сообщение всем потокам группы
+
+MPI_Bcast( array, 100, MPI_INT, 0, com)
+
+// сборка данных со всех процессов на одном со смещением индекса:
+// MPI_Gather(void &sbuf(адрес отправки), int scount, MPI_Datatype stype, void &rbuf(адрес приема), int rcount, MPI_Datatyper type, int dest(номер процесса собирателя), MPI_Comm comm)
+
+int array[100]
+int root, unt *rbuf, size, rank;
+MPI_COMM_size(MPI_COMM_WORLD, &size);
+rbuf = (int*)malloc(seze*100*sizeof(int));
+MPI_Gether( array, 100, MPI_INT, rbuf, 100, MPI_INT, root, MPI_COMM_WORLD);
+
+// Большой массив отсылать по кускам на процессы:
+// int MPI_Scatter( void &sbuf, int scount, MPI_Datatype stype, void &rbuf, int rcount, MPI_datatype rtype, int source, MPI_COmm comm)
+
+#include <mpi.h>
+#include <stdio.h>
+#define SIZE 4
+int main(int argc, char **argv){
+	int num_tasks, rank, send_conut, recv_count, source;
+	float send_buf [SIZE][SIZE] = ...
+	float recv_buf [SIZE];
+	MPI_Init(&argc, &argv);
+	MPI_Comm_size(MPI_COMM_WORLD, &num_tasts);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	if( num_tasks == SIZE){
+		source = 1;
+		send_count = SIZE;
+		recv_count = SIZE;
+		MPI_Scatter(send_buf, send_count, MPI_FLOAT, recv_buf, recv_count, MPI_INT, source, MPI_COMM_WORLD);
+		printf("rank=%d res %f %f %f %f \n", rank, resv_buf[0], resv_buf[1], resv_buf[2], resv_buf[3]);
+	}
+	MPI_Finalize();
+	return 0;
+}
+
+// int MPI_Allreduce(noid *sbuf, void *rbuf, int count, MPI_Datatype type, MPI_Op op, MPI_Comm com);
+// MPI_MAX, _MIN, _SUM, _PROD
+// MPI_LAND, _LOR, LXOR
+// MPI_BAND, _BOR, BXOR
+ 
+
+// int MPI_Barrier(MPI_Comm comm);
+
+// int MPI_Comm_split(MPI_Comm com, int color, int key, MPI_Com newcom)
+// int MPI_Comm_free(MPI_Comm comm);
